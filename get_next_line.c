@@ -6,7 +6,7 @@
 /*   By: rhohls <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/07 12:21:45 by rhohls            #+#    #+#             */
-/*   Updated: 2018/06/18 07:58:37 by rhohls           ###   ########.fr       */
+/*   Updated: 2018/06/18 10:36:29 by rhohls           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@
 ** BASICALLY str sub without malloc
 */
 
-static char		*ft_striso(char *str, char c)
+static char			*ft_striso(char *str, char c)
 {
-	size_t	i;
-	size_t	len;
-	size_t	leni;
-	char	*ret;
+	size_t			i;
+	size_t			len;
+	size_t			leni;
+	char			*ret;
 
 	len = ft_strlen(str);
 	i = 0;
@@ -46,24 +46,9 @@ static char		*ft_striso(char *str, char c)
 	return (ret);
 }
 
-char	*ft_strjoinfree(char *s1, char const *s2)
+static t_gnl		*ft_lstnew_gnl(int fd)
 {
-	char *str_new;
-
-	if (s1 == NULL || s2 == NULL)
-		return (0);
-	if (!(str_new = ft_strnew((size_t)(ft_strlen((char *)s1)
-					+ ft_strlen((char *)s2) + 1))))
-		return (NULL);
-	ft_strcpy(str_new, (char *)s1);
-	ft_strcpy((str_new + ft_strlen((char *)s1)), (char *)s2);
-	free(&(*s1));
-	return (str_new);
-}
-
-static t_gnl	*ft_lstnew_gnl(int fd)
-{
-	t_gnl	*new;
+	t_gnl			*new;
 
 	if (!(new = (t_gnl*)ft_memalloc(sizeof(t_gnl))))
 		return (NULL);
@@ -72,7 +57,7 @@ static t_gnl	*ft_lstnew_gnl(int fd)
 	return (new);
 }
 
-t_gnl		*find_fd(t_gnl **listhold, int fd, t_gnl *lstcur)
+t_gnl				*find_fd(t_gnl **listhold, int fd, t_gnl *lstcur)
 {
 	t_gnl			*start;
 
@@ -101,11 +86,11 @@ t_gnl		*find_fd(t_gnl **listhold, int fd, t_gnl *lstcur)
 	return (lstcur);
 }
 
-int			gnl_ret(t_gnl *lstcur, char **line, int fd, char *strhold)
+int					gnl_ret(t_gnl *lstcur, char **line, int fd, char *strhold)
 {
-	char	buffstr[BUFF_SIZE + 1];
-	int		read_ret;
-	char	c;
+	char			buffstr[BUFF_SIZE + 1];
+	int				read_ret;
+	char			c;
 
 	while (TRUE)
 	{
