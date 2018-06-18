@@ -6,7 +6,7 @@
 /*   By: rhohls <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/07 12:21:45 by rhohls            #+#    #+#             */
-/*   Updated: 2018/06/18 10:36:29 by rhohls           ###   ########.fr       */
+/*   Updated: 2018/06/18 11:38:47 by rhohls           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static t_gnl		*ft_lstnew_gnl(int fd)
 	return (new);
 }
 
-t_gnl				*find_fd(t_gnl **listhold, int fd, t_gnl *lstcur)
+static t_gnl		*find_fd(t_gnl **listhold, int fd, t_gnl *lstcur)
 {
 	t_gnl			*start;
 
@@ -86,7 +86,7 @@ t_gnl				*find_fd(t_gnl **listhold, int fd, t_gnl *lstcur)
 	return (lstcur);
 }
 
-int					gnl_ret(t_gnl *lstcur, char **line, int fd, char *strhold)
+static int			gnl_ret(t_gnl *lstcur, char **line, int fd, char *strhold)
 {
 	char			buffstr[BUFF_SIZE + 1];
 	int				read_ret;
