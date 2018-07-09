@@ -16,119 +16,80 @@
 
 #include <stdio.h>
 
-/*
-** str iso: returns new string from str until char c
-** then removes that from original using memmove
-** BASICALLY str sub without malloc
-*/
-
-static char			*ft_striso(char *str, char c)
+static char		*line_and_adjust_str(char *str, t_list *curr_node)
 {
-	size_t			i;
-	size_t			len;
-	size_t			leni;
-	char			*ret;
+	int		i;
+	int		len;
+	char	*ret;
+	char	*temp;
 
-	len = ft_strlen(str);
 	i = 0;
-	while (str[i])
-	{
-		if (str[i] == c)
-			break ;
+	len = ft_strlen(str);
+	while (str[i] && str[i] != '\n')
 		i++;
-	}
 	ret = ft_strsub(str, 0, i);
-	if (c == '\0')
-		i--;
-	leni = len - i;
-	ft_memmove(str, (str + (i + 1)), leni);
-	ft_bzero((str + leni), i);
-	return (ret);
+	if (!str[i] || (str[i] && !str[i + 1]))
+		ft_strdel(&str);
+	temp = str;
+	str = ft_strdup(str + i + 1);
+	free(temp);
+	curr_node->STRING = str;
+	return(ret);
 }
 
-static t_gnl		*ft_lstnew_gnl(int fd)
+static t_list	*find_fd_str(const int fd, t_list **list)
 {
-	t_gnl			*new;
+	t_list	*curr_node;
 
-	if (!(new = (t_gnl*)ft_memalloc(sizeof(t_gnl))))
-		return (NULL);
-	new->string = ft_memalloc(1);
-	new->fd = fd;
-	return (new);
-}
-
-static t_gnl		*find_fd(t_gnl **listhold, int fd, t_gnl *lstcur)
-{
-	t_gnl			*start;
-
-	start = *listhold;
-	while (*listhold)
+	curr_node = *list;
+	while (curr_node)
 	{
-		if ((*listhold)->fd == fd)
-		{
-			lstcur = *listhold;
-			break ;
-		}
-		if ((*listhold)->next)
-			*listhold = (*listhold)->next;
-		else
-			break ;
+		if ((int)curr_node->FD == fd)
+			return (curr_node);
+		curr_node = curr_node->next;
 	}
-	if (!lstcur)
-	{
-		lstcur = ft_lstnew_gnl(fd);
-		if (!(*listhold))
-			*listhold = lstcur;
-		else
-			(*listhold)->next = lstcur;
-	}
-	*listhold = (start != NULL) ? start : *listhold;
-	return (lstcur);
+	printf("ADDED NEW NODE\n");
+	curr_node = ft_lstnew(0, fd);
+	curr_node->STRING = ft_strnew(1);
+	curr_node->FD = fd;
+	ft_lstadd(list, curr_node);
+	return (curr_node);
 }
 
-static int			gnl_ret(t_gnl *lstcur, char **line, int fd, char *strhold)
+int				get_next_line(const int fd, char **line)
 {
-	char			buffstr[BUFF_SIZE + 1];
+	static t_list	*listhold;
+	t_list			*curr_node;
+	char			*str;
 	int				read_ret;
-	char			c;
-
-	while (TRUE)
-	{
-		ft_bzero(buffstr, (size_t)(BUFF_SIZE + 1));
-		if ((read_ret = read(fd, buffstr, BUFF_SIZE)) == -1)
-			return (-1);
-		strhold = ft_strjoinfree(strhold, buffstr);
-		if (read_ret == 0 && ft_strlen(strhold) == 0)
-		{
-			*line = ft_strdup("\0");
-			return (0);
-		}
-		if (read_ret == 0 || ft_strchr(strhold, '\n'))
-		{
-			c = (read_ret == 0) ? '\0' : '\n';
-			*line = ft_striso(strhold, c);
-			lstcur->string = strhold;
-			return (1);
-		}
-	}
-}
-
-int					get_next_line(const int fd, char **line)
-{
-	static t_gnl	*listhold;
-	t_gnl			*lstcur;
-	char			*strhold;
+	char			buffstr[BUFF_SIZE + 1];
 
 	if (BUFF_SIZE <= 0 || !line || (fd < -1))
 		return (-1);
-	lstcur = NULL;
-	lstcur = find_fd(&listhold, fd, lstcur);
-	strhold = lstcur->string;
-	if (strhold && ft_strchr(strhold, '\n'))
+	curr_node = find_fd_str(fd, &listhold);
+	str = curr_node->STRING;
+	printf("current string |%s|\n", str);
+	if (!str)
+		str = ft_strnew(1);
+	printf("1\n");
+	while(!(ft_strchr(str, '\n')))
 	{
-		*line = ft_striso(strhold, '\n');
-		lstcur->string = strhold;
-		return (1);
+		read_ret = read(fd, buffstr, BUFF_SIZE);
+		if (read_ret == -1)
+			return (-1);
+		buffstr[read_ret] = '\0';
+		str = ft_strjoin(str, buffstr);
+		if (read_ret == 0)
+		{
+			if (*str == '\0')
+				return (0);
+			break ;
+		}
 	}
-	return (gnl_ret(lstcur, line, fd, strhold));
+	//printf("address before 1--%p 2--%p\n", str, curr_node->STRING);
+	*line = line_and_adjust_str(str, curr_node);
+	//printf("address after 1--%p 2--%p\n", str, curr_node->STRING);
+	//curr_node->STRING = str;
+	printf("string that got stored |%s|\n", curr_node->STRING);
+	return (1);
 }

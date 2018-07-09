@@ -6,7 +6,7 @@
 /*   By: rhohls <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/04 14:37:33 by rhohls            #+#    #+#             */
-/*   Updated: 2018/06/11 13:57:23 by rhohls           ###   ########.fr       */
+/*   Updated: 2018/07/09 14:07:37 by rhohls           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <unistd.h>
@@ -48,7 +48,8 @@ int	main(int argc, char ** argv)
 //		j = get_next_line(fd, &line);
 //		if (j == 0)
 //			printf("\n done! \n");
-		printf("line %i is:\t |%s| \n",i, line);
+		if (j != 0)
+			printf("line %i is:\t |%s| \n",i, line);
 		if (j)
 			free(line);	
 		i++;
