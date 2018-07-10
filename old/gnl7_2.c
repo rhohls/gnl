@@ -32,7 +32,7 @@ int				main(void)
 			if (count_lines == 1 && strcmp(line, "abcdefgh") != 0)
 				errors++;
 			count_lines++;
-			if (count_lines > 50)
+			if (count_lines > 10)
 				break ;
 		}
 		close(fd);

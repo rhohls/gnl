@@ -6,7 +6,7 @@
 /*   By: rhohls <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/04 07:19:30 by rhohls            #+#    #+#             */
-/*   Updated: 2018/07/09 14:08:24 by rhohls           ###   ########.fr       */
+/*   Updated: 2018/07/10 07:15:21 by rhohls           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "./libft/includes/libft.h"
 
-# define BUFF_SIZE 10
+# define BUFF_SIZE 50
 # define FD content_size
 # define STRING content
 
